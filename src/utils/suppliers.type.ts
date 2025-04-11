@@ -7,5 +7,4 @@ export interface SupplierProps{
   status: boolean;
   createdAt: Date;
   updatedAt: Date;
-
 }

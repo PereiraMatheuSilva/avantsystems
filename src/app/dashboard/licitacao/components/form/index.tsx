@@ -1,9 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import MaskedCurrencyInput from '../MaskedCurrencyInput'; // Ajuste o caminho se necessário
 
-export default function FormLicitacao() {
-  const [numeroOrcamento, setNumeroOrcamento] = useState<number | null>(null);
+
+interface FormLicitacaoProps {
+  numeroOrcamento: number | null;
+  setNumeroOrcamento: (id: number) => void;
+}
+
+
+export default function FormLicitacao({ numeroOrcamento, setNumeroOrcamento }: FormLicitacaoProps) {
   const [name, setName] = useState('');
   const [valorLicitacao, setValorLicitacao] = useState('');
   const [dataAbertura, setDataAbertura] = useState('');
@@ -41,7 +48,7 @@ export default function FormLicitacao() {
           value={numeroOrcamento ?? ''}
           disabled
           placeholder='Identificador gerado automáticamente'
-          className='border-2 rounded-md px-2 mb-2 h-11 w-full'
+          className='border-2 rounded-md px-2 mb-2 h-11 w-full bg-gray-50'
         />
       </div>
 
@@ -50,7 +57,7 @@ export default function FormLicitacao() {
         <input
           type='text'
           required
-          placeholder='Digite nome da Cidade/Licitação'          
+          placeholder='Digite nome da Cidade/Licitação'
           value={name}
           onChange={(e) => setName(e.target.value)}
           className='border-2 rounded-md px-2 mb-2 h-11 w-full'
@@ -70,13 +77,10 @@ export default function FormLicitacao() {
 
       <div className='flex flex-col flex-1'>
         <label className='mb-1 font-medium text-xl'>Valor Total Licitação</label>
-        <input
-          type='text'
-          required
-          placeholder='R$ XX.XXX,XX'
+        <MaskedCurrencyInput
           value={valorLicitacao}
-          onChange={(e) => setValorLicitacao(e.target.value)}
-          className='border-2 rounded-md px-2 mb-2 h-11 w-full'
+          onChange={setValorLicitacao}
+          className='mb-2'
         />
       </div>
 

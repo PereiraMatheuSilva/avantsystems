@@ -33,7 +33,6 @@ export async function POST(request: Request) {
 
 }
 
-
 export async function DELETE(request:Request) {
   const session = await getServerSession(authOptions);
 
@@ -70,4 +69,22 @@ export async function DELETE(request:Request) {
 
 
 
+}
+
+export async function GET(request: Request) {
+  const session = await getServerSession(authOptions);
+
+  if(!session || !session.user){
+    return NextResponse.json({error: "Not authorized"}, {status: 401})
+  }
+ 
+  try {
+   const fornId = await prismaClient.fornecedor.findMany();   
+
+   return NextResponse.json(fornId)
+
+  } catch (error) {
+    console.log(error)
+    return NextResponse.json({error: "Failed get fornecedor"}, {status: 400})
+  }
 }

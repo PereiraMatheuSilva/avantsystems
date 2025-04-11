@@ -1,8 +1,11 @@
+'use client'
 import { Container } from '@/components/container';
 import FormLicitacao from './components/form'
 import FormProduto from './components/formProduto/'
- 
-export default async function Licitacao(){
+import { useState } from 'react';
+
+export default function Licitacao(){
+  const [numeroOrcamento, setNumeroOrcamento] = useState<number | null>(null)
 
  return(
     <Container>
@@ -13,13 +16,18 @@ export default async function Licitacao(){
         </div>
 
         
-        <FormLicitacao />
+        <FormLicitacao 
+          numeroOrcamento={numeroOrcamento}
+          setNumeroOrcamento={setNumeroOrcamento}
+        />
 
 
         
         <h1 className='text-3xl font-bold text-gray-600 mt-6'>Produtos</h1>
 
-        <FormProduto />
+        {numeroOrcamento && (
+          <FormProduto licitacaoId={numeroOrcamento}/>
+        )}
 
 
       </main>

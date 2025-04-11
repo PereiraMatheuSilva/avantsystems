@@ -1,23 +1,47 @@
-import { FiTrash2, FiFile } from 'react-icons/fi'
+'use client'
+import { FiFile } from 'react-icons/fi'
+import { ModalContext } from '@/providers/modal';
+import { useContext } from 'react';
+import { LicitacaoInfo } from '@/utils/licitacao';
 
 
-export function TicketItem(){
+export function TicketItem({ licitacao, orcamentos }: LicitacaoInfo) {
+
+  const { handleModalVisible, setDetailLicitacao } = useContext(ModalContext)
+
+  function handleOpenModal(){
+    handleModalVisible();
+    setDetailLicitacao({
+      licitacao: licitacao,
+      orcamentos: orcamentos
+    })
+  }
+
+
   return(
     <>
       <tr className='border-b-2 border-b-slate-200 h-16 last:border-b-0
       bg-slate-50 hover:bg-slate-100 duration-300'>
-        <td className='text-left pl-1'>FOZ DO IGUAÇU</td>
-        <td className='text-left'>25/03/2025</td>
+        <td className='text-left pl-1'>{licitacao.name}</td>
+        <td className='text-left'>{licitacao.dataAbertura ? licitacao.dataAbertura.toLocaleDateString() : 'Sem data'}</td>
         <td className='text-left'>
-          <span className='bg-green-800 px-2 py-1 rounded text-white'>ABERTO</span>
+          {Number(licitacao.valorLicitacao).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+          })}
+        </td>
+        <td className="text-left">
+          <span
+            className={`px-2 py-1 rounded text-white ${
+              licitacao.status ? 'bg-green-800' : 'bg-red-600'
+            }`}
+          >
+            {licitacao.status ? 'ABERTO' : 'FECHADO'}
+          </span>
         </td>
 
         <td className='text-left'>
-          <button className='mr-2'>
-            <FiTrash2 size={24} color='#EF4444' />
-          </button>
-
-          <button>
+          <button onClick={handleOpenModal}>
             <FiFile size={24} color='#3b82f6' />
           </button>
         </td>

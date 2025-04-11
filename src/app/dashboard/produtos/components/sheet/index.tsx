@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sheet"
 import { Input } from '@/components/input'
 import { api } from '@/lib/api'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import MaskedCurrencyInput from '@/app/dashboard/licitacao/components/MaskedCurrencyInput'
 
@@ -28,6 +29,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export function CadProd() {
+  const [fornecedores, setFornecedores] = useState<any[]>([])
+
   const {
     register,
     handleSubmit,
@@ -43,6 +46,26 @@ export function CadProd() {
       lucro: '',
     },
   })
+
+  useEffect(() => {
+    async function fetchFornecedores() {
+      try {
+        const response = await api.get("/api/supplier")
+      
+        if (Array.isArray(response.data)) {
+          setFornecedores(response.data)
+        } else {
+          console.error("Dados recebidos não são um array:", response.data)
+          setFornecedores([]) // previne o erro do .map
+        }
+      } catch (error) {
+        console.error("Erro ao buscar fornecedores:", error)
+      }
+    }
+  
+    fetchFornecedores()
+  }, [])
+
 
   const router = useRouter()
 
@@ -67,8 +90,6 @@ export function CadProd() {
       return value
         .replace(/\s/g, "")       // remove espaços
         .replace("R$", "")        // remove "R$"
-        .replace(/\./g, "")       // remove pontos
-        .replace(",", ".")        // troca vírgula por ponto
         .trim();
     };
 
@@ -132,10 +153,11 @@ export function CadProd() {
             <label htmlFor="fornecedorId">Fornecedor</label>
             <select
               {...register("fornecedorId")}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-            >
+              className="w-full border border-gray-300 rounded px-3 py-2">
               <option value="" disabled hidden>Selecione um fornecedor</option>
-              <option value="67ec76014a29b3e8a88428b6">Intelbras</option>
+              {fornecedores.map((f: any) => (
+                <option key={f.id} value={f.id}>{f.name}</option>
+              ))}
             </select>
             {errors.fornecedorId && <p className="text-red-500 text-sm">{errors.fornecedorId.message}</p>}
           </div>

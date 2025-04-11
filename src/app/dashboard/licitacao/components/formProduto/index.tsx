@@ -12,7 +12,11 @@ interface ProdutoItem {
   valorTotal: string
 }
 
-export default function FormProduto() {
+interface FormProdutoProps {
+  licitacaoId?: number | null; // Receba o ID da licitação, se necessário
+}
+
+export default function FormProduto({ licitacaoId }: FormProdutoProps) {
   const [itens, setItens] = useState<ProdutoItem[]>([{
     descricao: '', quantidade: '', fornecedor: '', valorUnitario: '', valorTotal: '',
   }])
@@ -46,6 +50,41 @@ export default function FormProduto() {
       .toFixed(2)
       .replace('.', ',')
   }
+
+  const handleSalvarLicitacao = async () => {
+    try {
+      const payload = {
+        licitacaoId: licitacaoId || null, // Inclua o ID da licitação se estiver disponível
+        produtos: itens.map(item => ({
+          descricao: item.descricao,
+          quantidade: parseFloat(item.quantidade.replace(',', '.')),
+          fornecedor: item.fornecedor,
+          valorUnitario: parseFloat(item.valorUnitario.replace('R$ ', '').replace('.', '').replace(',', '.')),
+          valorTotal: parseFloat(item.valorTotal.replace('R$ ', '').replace('.', '').replace(',', '.')),
+        })),
+      };
+
+      const response = await fetch('/api/salvar-produtos', { // Endpoint para salvar os produtos
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Produtos da licitação salvos com sucesso!', data);
+        // Redirecionar ou mostrar mensagem de sucesso
+      } else {
+        console.error('Erro ao salvar produtos da licitação:', data);
+        // Mostrar mensagem de erro
+      }
+    } catch (error) {
+      console.error('Erro ao enviar dados:', error);
+    }
+  };
 
   return (
     <div className="space-y-4 mt-6">
@@ -99,8 +138,9 @@ export default function FormProduto() {
               type="text"
               placeholder="Fornecedor"
               value={item.fornecedor}
+              disabled
               onChange={(e) => atualizarItem(index, 'fornecedor', e.target.value)}
-              className={`border-2 rounded-md px-2 ${index === 0 ? 'mb-2' : ''} h-11 w-full`}
+              className={`border-2 rounded-md px-2 ${index === 0 ? 'mb-2' : ''} h-11 w-full bg-gray-50`}
               required
             />
           </div>
@@ -120,6 +160,7 @@ export default function FormProduto() {
             <MaskedCurrencyInput
               value={item.valorTotal}
               onChange={() => {}}
+              className='bg-gray-50'
               disabled
             />
           </div>
@@ -137,6 +178,7 @@ export default function FormProduto() {
 
         <button
           type="button"
+          onClick={handleSalvarLicitacao} // Chama a função de envio
           className="bg-green-900 text-white px-4 py-2 rounded-md hover:bg-green-800"
         >
           + Salvar Licitação
