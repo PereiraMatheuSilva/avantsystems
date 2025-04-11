@@ -3,9 +3,6 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import  PrismaClient  from '@/lib/prisma';
-import { Console } from 'console';
-
-
 
 export async function DELETE(request: Request) {
   const session = await getServerSession(authOptions);
@@ -16,6 +13,8 @@ export async function DELETE(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const productId = searchParams.get("id");
+
+  console.log(productId)
 
   if(!productId){
     return NextResponse.json({ error: "Failed delete product" }, { status: 400 });   

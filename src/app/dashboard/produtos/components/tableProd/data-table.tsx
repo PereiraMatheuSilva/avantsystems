@@ -38,9 +38,6 @@ interface DataTableProps {
   data: Produto[]
 }
 
-
-
-
 export function DataTable({ columns, data }: DataTableProps) {
   const table = useReactTable({
     data,
