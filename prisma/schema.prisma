@@ -116,6 +116,8 @@ model Licitacao {
   name           String?   @unique
   status         Boolean   @default(true)
   valorLicitacao String?
+  valorLance     String?
+  valorTotalOrc  String?
   dataAbertura   DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
