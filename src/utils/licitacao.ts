@@ -1,11 +1,11 @@
 export interface OrcamentoProps {
   produtoId: string;
   precoUnitario: string;
-  descricao: string;
   quantidade: string;
-  fornecedor: string;
-  valorUnitario: string;
   totalItem: string;
+  descricao?: string;
+  fornecedor?: string;
+  valorUnitario?: string;
 }
 
 export interface LicitacaoProps {
