@@ -83,24 +83,15 @@ export function CadProd({ onSuccess }: { onSuccess: () => void }) {
   }
 
   const handleRegisterProduct = async (data: FormData) => {
-    const sanitizeCurrency = (value: string) => {
-      if (!value) return "0";
-      return value
-        .replace(/\s/g, "")
-        .replace("R$", "")
-        .replace(/\./g, "")
-        .replace(",", ".")
-        .trim();
-    };
-
+    
     const payload = {
       name: data.name,
       fornecedorId: data.fornecedorId,
       ncm: data.ncm,
-      price: sanitizeCurrency(data.price),
-      imposto: sanitizeCurrency(data.impostos),
-      frete: sanitizeCurrency(data.frete),
-      lucro: sanitizeCurrency(data.lucro),
+      price: (data.price),
+      imposto: (data.impostos),
+      frete: (data.frete),
+      lucro: (data.lucro),
     };
 
     try {
