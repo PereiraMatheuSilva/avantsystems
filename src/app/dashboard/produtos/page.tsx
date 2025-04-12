@@ -1,7 +1,7 @@
 import { Container } from '@/components/container';
 import { CadProd } from './components/sheet';
 import prismaClient from '@/lib/prisma';
-import { ListProd } from './components/listProd';
+import ListProd from './components/listProd';
 import { ProdutosProps } from '@/utils/produtos';
 
 interface ProductsTicket{
