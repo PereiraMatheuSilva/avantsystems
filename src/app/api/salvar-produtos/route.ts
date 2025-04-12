@@ -69,7 +69,11 @@ export async function GET(req: Request) {
   }
 
   try {
-    const produtos = await PrismaClient.produto.findMany()
+    const produtos = await PrismaClient.produto.findMany({
+      include:{
+        fornecedor: true
+      }
+    })
     return NextResponse.json(produtos);
     
   } catch (err) {

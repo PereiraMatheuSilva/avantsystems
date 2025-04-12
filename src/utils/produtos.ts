@@ -3,7 +3,7 @@ export interface ProdutosProps{
   name: string;
   fornecedor: {
       id: string;
-      nome: string;
+      name: string;
   };
   fornecedorId: string;
   ncm: string | null;

@@ -1,4 +1,5 @@
 import { ProdutosProps } from '@/utils/produtos';
+import { FormDetail } from '../formDetail/';
 
 const formatCurrency = (value?: string | number): string => {
   let numberValue: number | undefined;
@@ -19,11 +20,26 @@ const formatCurrency = (value?: string | number): string => {
   }).format(numberValue);
 };
 
-export default function ListProd({ produtos }: { produtos: ProdutosProps }) {
+interface ListProdProps {
+  produtos: ProdutosProps;
+  onRowClick?: (produto: ProdutosProps) => void; // Prop para a função de clique
+}
+
+export default function ListProd({ produtos, onRowClick }: ListProdProps) {
+  const handleRowClick = () => {
+    if (onRowClick) {
+      onRowClick(produtos);
+      console.log(produtos.id, "COMPONETNE") // Chama a função passada com os <
+    }
+  };
+
   return (
-    <tr className="data-[state=selected]:bg-muted border-b transition-colors cursor-pointer hover:bg-gray-100">
+    <tr
+      className="data-[state=selected]:bg-muted border-b transition-colors cursor-pointer hover:bg-gray-100"
+      onClick={handleRowClick} // Adiciona o manipulador de clique
+    >
       <td className="p-2 align-middle whitespace-nowrap">{produtos.name}</td>
-      <td className="p-2 align-middle whitespace-nowrap">{produtos.fornecedor.nome}</td>
+      <td className="p-2 align-middle whitespace-nowrap">{produtos.fornecedor.name}</td>
       <td className="p-2 align-middle whitespace-nowrap">{produtos.ncm}</td>
       <td className="p-2 align-middle whitespace-nowrap">{formatCurrency(produtos.price)}</td>
       <td className="p-2 align-middle whitespace-nowrap">{formatCurrency(produtos.frete)}</td>
