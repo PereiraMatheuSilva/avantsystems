@@ -4,11 +4,6 @@ import prismaClient from '@/lib/prisma';
 import ListProd from './components/listProd';
 import { ProdutosProps } from '@/utils/produtos';
 
-interface ProductsTicket{
-  produtosItem: ProdutosProps
-}
-
-
 async function getData(){
   const produtos = await prismaClient.produto.findMany({
     include: {
@@ -60,11 +55,10 @@ async function getData(){
 }
 
 
-export default async function Produtos({produtosItem}: ProductsTicket){
+export default async function Produtos({produtosItem}: {produtosItem: ProdutosProps}){
   const data = await getData()
 
   const produtos = await prismaClient.produto.findMany();
-  console.log(produtos)
 
  return(
     <Container>
@@ -92,7 +86,8 @@ export default async function Produtos({produtosItem}: ProductsTicket){
               </thead>
               <tbody className="[&>tr:last-child]:border-0">
 
-                {data.map(item => {// Adicione isso para verificar a estrutura de `item`
+                {data.map(item => {
+                  console.log(item); // Adicione isso para verificar a estrutura de `item`
                   return (
                     <ListProd key={item.id} produtos={item} />
                   );
