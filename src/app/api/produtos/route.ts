@@ -14,12 +14,6 @@ export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
   const productId = searchParams.get("id");
 
-  console.log(productId)
-
-  if(!productId){
-    return NextResponse.json({ error: "Failed delete product" }, { status: 400 });   
-  }
-
 
   try {
     await PrismaClient.produto.delete({
@@ -33,8 +27,6 @@ export async function DELETE(request: Request) {
     console.log(err)
     return NextResponse.json({ error: "Failed delete product" }, { status: 400 });
   }
-
-
 
 
 }

@@ -71,7 +71,6 @@ export default async function Produtos(){
 
         <section className='min-w-full my-2'>
           
-          
           <DataTable columns={columns} data={data} />
 
         </section>
