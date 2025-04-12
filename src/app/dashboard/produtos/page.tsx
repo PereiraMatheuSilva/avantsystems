@@ -55,7 +55,7 @@ async function getData(){
 }
 
 
-export default async function Produtos({produtosItem}: {produtosItem: ProdutosProps}){
+export default async function Produtos(){
   const data = await getData()
 
   const produtos = await prismaClient.produto.findMany();
