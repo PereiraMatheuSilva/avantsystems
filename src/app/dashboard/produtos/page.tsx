@@ -87,22 +87,15 @@ export default async function Produtos(){
               <tbody className="[&>tr:last-child]:border-0">
 
                 {data.map(item => {
-                  console.log(item); // Adicione isso para verificar a estrutura de `item`
                   return (
                     <ListProd key={item.id} produtos={item} />
                   );
                 })}
-
-
+                
               </tbody>
             </table>
           </div>
         </div>
-
-
-
-
-
 
 
       </main>

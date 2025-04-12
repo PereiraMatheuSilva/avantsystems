@@ -16,13 +16,14 @@ export async function DELETE(request: Request) {
 
 
   try {
-    await PrismaClient.produto.delete({
+    const produto = await PrismaClient.produto.delete({
       where:{
         id: productId as string
       }
     })
 
-    return NextResponse.json({ message: "Produto deletado com sucesso" });
+    return NextResponse.json(produto, { status: 201 });
+
   } catch (err) {
     console.log(err)
     return NextResponse.json({ error: "Failed delete product" }, { status: 400 });

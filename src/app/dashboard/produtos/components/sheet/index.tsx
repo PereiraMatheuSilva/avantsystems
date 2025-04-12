@@ -30,6 +30,7 @@ type FormData = z.infer<typeof schema>
 
 export function CadProd() {
   const [fornecedores, setFornecedores] = useState<any[]>([])
+  const router = useRouter()
 
   const {
     register,
@@ -51,7 +52,7 @@ export function CadProd() {
     async function fetchFornecedores() {
       try {
         const response = await api.get("/api/supplier")
-      
+
         if (Array.isArray(response.data)) {
           setFornecedores(response.data)
         } else {
@@ -62,12 +63,9 @@ export function CadProd() {
         console.error("Erro ao buscar fornecedores:", error)
       }
     }
-  
+
     fetchFornecedores()
   }, [])
-
-
-  const router = useRouter()
 
   const price = watch('price') || '0'
   const impostos = watch('impostos') || '0'
@@ -84,17 +82,21 @@ export function CadProd() {
     return `R$ ${valor.toFixed(2).replace('.', ',')}`
   }
 
-  const handleRegisterProduct = async (data: any) => {
+  const handleRegisterProduct = async (data: FormData) => {
     const sanitizeCurrency = (value: string) => {
       if (!value) return "0";
       return value
         .replace(/\s/g, "")       // remove espaços
         .replace("R$", "")        // remove "R$"
+        .replace(/\./g, "")       // remove pontos (milhar)
+        .replace(",", ".")        // converte vírgula para ponto (decimal)
         .trim();
     };
 
     const payload = {
-      ...data,
+      name: data.name,
+      fornecedorId: data.fornecedorId,
+      ncm: data.ncm,
       price: sanitizeCurrency(data.price),
       imposto: sanitizeCurrency(data.impostos),
       frete: sanitizeCurrency(data.frete),
@@ -102,27 +104,14 @@ export function CadProd() {
     };
 
     try {
-      const response = await fetch("/api/produtos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        console.log("Produto cadastrado:", result);
-        router.refresh();
-      } else {
-        console.error("Erro no cadastro:", result.error);
-        router.refresh();
-      }
+      const response = await api.post("/api/produtos", payload)
+      console.log("Produto cadastrado:", response.data)
+      router.refresh() // Atualiza a página
     } catch (error) {
-      console.error("Erro na requisição:", error);
-      router.refresh();
+      console.error("Erro ao cadastrar produto:", error)
     }
-  };
+  }
+
   return (
     <Sheet>
       <SheetTrigger className="bg-blue-900 text-white px-4 py-2 rounded">
@@ -153,7 +142,8 @@ export function CadProd() {
             <label htmlFor="fornecedorId">Fornecedor</label>
             <select
               {...register("fornecedorId")}
-              className="w-full border border-gray-300 rounded px-3 py-2">
+              className="w-full border border-gray-300 rounded px-3 py-2"
+            >
               <option value="" disabled hidden>Selecione um fornecedor</option>
               {fornecedores.map((f: any) => (
                 <option key={f.id} value={f.id}>{f.name}</option>
@@ -173,7 +163,6 @@ export function CadProd() {
             />
           </div>
 
-          {/* Custo, Imposto e Frete */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label>Custo</label>
@@ -203,7 +192,6 @@ export function CadProd() {
             </div>
           </div>
 
-          {/* Lucro e Total */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label>Lucro</label>

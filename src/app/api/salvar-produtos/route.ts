@@ -59,3 +59,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Erro ao salvar orçamentos da licitação" }, { status: 500 });
   }
 }
+
+
+export async function GET(req: Request) {
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user) {
+    return NextResponse.json({ error: "Not authorized" }, { status: 401 });
+  }
+
+  try {
+    const produtos = await PrismaClient.produto.findMany()
+    return NextResponse.json(produtos);
+    
+  } catch (err) {
+    console.error("Erro ao buscar produtos:", err);
+    return NextResponse.json({ error: "Erro ao buscar produtos" }, { status: 500 });
+  }
+}
