@@ -28,7 +28,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export function CadProd() {
+export function CadProd({ onSuccess }: { onSuccess: () => void }) {
   const [fornecedores, setFornecedores] = useState<any[]>([])
   const router = useRouter()
 
@@ -86,10 +86,10 @@ export function CadProd() {
     const sanitizeCurrency = (value: string) => {
       if (!value) return "0";
       return value
-        .replace(/\s/g, "")       // remove espaços
-        .replace("R$", "")        // remove "R$"
-        .replace(/\./g, "")       // remove pontos (milhar)
-        .replace(",", ".")        // converte vírgula para ponto (decimal)
+        .replace(/\s/g, "")
+        .replace("R$", "")
+        .replace(/\./g, "")
+        .replace(",", ".")
         .trim();
     };
 
@@ -107,6 +107,8 @@ export function CadProd() {
       const response = await api.post("/api/produtos", payload)
       console.log("Produto cadastrado:", response.data)
       router.refresh() // Atualiza a página
+      onSuccess() // <- Aqui está a chamada da função passada por props
+      
     } catch (error) {
       console.error("Erro ao cadastrar produto:", error)
     }
