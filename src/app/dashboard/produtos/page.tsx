@@ -1,11 +1,15 @@
 import { Container } from '@/components/container';
 import { CadProd } from './components/sheet';
-import { Produto, columns } from './components/tableProd/columns';
-import { DataTable } from './components/tableProd/data-table';
 import prismaClient from '@/lib/prisma';
+import { ListProd } from './components/listProd';
+import { ProdutosProps } from '@/utils/produtos';
+
+interface ProductsTicket{
+  produtosItem: ProdutosProps
+}
 
 
-async function getData(): Promise<Produto[]> {
+async function getData(){
   const produtos = await prismaClient.produto.findMany({
     include: {
       fornecedor: true, // Certifique-se de que a relação existe no Prisma
@@ -56,8 +60,11 @@ async function getData(): Promise<Produto[]> {
 }
 
 
-export default async function Produtos(){
+export default async function Produtos({produtosItem}: ProductsTicket){
   const data = await getData()
+
+  const produtos = await prismaClient.produto.findMany();
+  console.log(produtos)
 
  return(
     <Container>
@@ -69,11 +76,39 @@ export default async function Produtos(){
         </div>
 
 
-        <section className='min-w-full my-2'>
-          
-          <DataTable columns={columns} data={data} />
+        <div className="rounded-md border mt-6">
+          <div className="relative w-full overflow-x-auto">
+            <table className="w-full caption-bottom text-sm">
+              <thead className="[&>tr]:border-b">
+                <tr className="hover:bg-muted/50 data-[state=selected]:bg-muted border-b    transition-colors">
+                  <th className="text-foreground h-10 px-2 text-left align-middle font-medium     whitespace-nowrap">Nome</th>
+                  <th className="text-foreground h-10 px-2 text-left align-middle font-medium     whitespace-nowrap">Fornecedor</th>
+                  <th className="text-foreground h-10 px-2 text-left align-middle font-medium     whitespace-nowrap">NCM</th>
+                  <th className="text-foreground h-10 px-2 text-left align-middle font-medium     whitespace-nowrap">Custo</th>
+                  <th className="text-foreground h-10 px-2 text-left align-middle font-medium     whitespace-nowrap">Frete</th>
+                  <th className="text-foreground h-10 px-2 text-left align-middle font-medium     whitespace-nowrap">Imposto</th>
+                  <th className="text-foreground h-10 px-2 text-left align-middle font-medium     whitespace-nowrap">Lucro</th>
+                </tr>
+              </thead>
+              <tbody className="[&>tr:last-child]:border-0">
 
-        </section>
+                {data.map(item => {
+                  console.log(item); // Adicione isso para verificar a estrutura de `item`
+                  return (
+                    <ListProd key={item.id} produtos={item} />
+                  );
+                })}
+
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
+
+
 
 
       </main>
